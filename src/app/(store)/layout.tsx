@@ -9,7 +9,7 @@ import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton";
 import { getBrand } from "@/lib/brand";
 const display = Outfit({ subsets: ["latin"], variable: "--font-display", display: "swap", weight: ["400", "500", "600", "700"] });
 const body = Manrope({ subsets: ["latin"], variable: "--font-body", display: "swap", weight: ["400", "500", "600", "700"] });
-export const metadata = { metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"), title: { default: "Beauty & Wellness Store", template: "%s | Beauty & Wellness Store" }, description: "Pills, gummies and gels for your daily wellness routine.", openGraph: { type: "website" }, verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined };
+export const metadata = { metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://glamifybeautywellness.vercel.app/"), title: { default: "Beauty & Wellness Store", template: "%s | Beauty & Wellness Store" }, description: "Pills, gummies and gels for your daily wellness routine.", openGraph: { type: "website" }, verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined };
 export default async function Root({ children }: { children: React.ReactNode }) {
   const [s, categories] = await Promise.all([
     db.storeSettings.findUnique({ where: { id: 1 } }),
