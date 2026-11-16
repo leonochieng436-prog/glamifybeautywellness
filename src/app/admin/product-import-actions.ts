@@ -37,6 +37,7 @@ function parseCsv(input: string): string[][] {
   let row: string[] = [];
   let cell = "";
   let quoted = false;
+  let quoteClosed = false;
 
   for (let index = 0; index < input.length; index += 1) {
     const character = input[index];
@@ -47,22 +48,29 @@ function parseCsv(input: string): string[][] {
           index += 1;
         } else {
           quoted = false;
+          quoteClosed = true;
         }
       } else {
         cell += character;
       }
-    } else if (character === '"' && cell.length === 0) {
-      quoted = true;
+    } else if (quoteClosed && (character === " " || character === "\t")) {
+      continue;
     } else if (character === ",") {
       row.push(cell);
       cell = "";
+      quoteClosed = false;
     } else if (character === "\n" || character === "\r") {
       row.push(cell);
       if (row.some((value) => value.trim())) rows.push(row);
       row = [];
       cell = "";
+      quoteClosed = false;
       if (character === "\r" && input[index + 1] === "\n") index += 1;
+    } else if (character === '"') {
+      if (cell.length !== 0 || quoteClosed) throw new Error("The CSV contains a misplaced quote.");
+      quoted = true;
     } else {
+      if (quoteClosed) throw new Error("The CSV contains characters after a quoted field.");
       cell += character;
     }
   }
@@ -120,7 +128,8 @@ export async function importProducts(
 
   const columnNames = rows[0].map((header) => header.trim());
   const duplicateHeaders = columnNames.filter((header, index) => columnNames.indexOf(header) !== index);
-  const unknownHeaders = columnNames.filter((header) => !headers.includes(header as (typeof headers)[number]));
+  const knownHeaders = new Set<string>(headers);
+  const unknownHeaders = columnNames.filter((header) => !knownHeaders.has(header));
   const missingHeaders = requiredHeaders.filter((header) => !columnNames.includes(header));
   if (duplicateHeaders.length || unknownHeaders.length || missingHeaders.length) {
     return {
