@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 import { requireAdmin } from "@/lib/auth";
 import { setProductArchived } from "@/app/admin/actions2";
+import ProductBulkImport from "@/components/admin/ProductBulkImport";
 import ConfirmDialog from "@/components/admin/ui/ConfirmDialog";
 import { Card, DataTable, EmptyState, FormField, Input, PageHeader, Pagination, Select, StatusPill, Toast } from "@/components/admin/ui";
 
@@ -114,6 +115,7 @@ export default async function Products({ searchParams }: { searchParams: Promise
     <>
       <PageHeader title="Products" description={`${total.toLocaleString("en-KE")} products in the catalogue.`} action={{ href: "/admin/products/new", label: "Add product" }} />
       {saved && <div className="mb-5"><Toast message={saved === "product" ? "Product saved." : "Product visibility updated."} /></div>}
+      <ProductBulkImport />
       <Card className="mb-5 p-4">
         <form method="get" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <FormField label="Search" htmlFor="product-search"><Input id="product-search" name="q" defaultValue={term} placeholder="Name or slug" /></FormField>
